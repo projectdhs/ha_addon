@@ -16,4 +16,5 @@
   "url": "https://github.com/projectdhs/ha_addon",
   "startup": "application",
   "boot": "auto",
-  "audio": t
+  "audio": true
+}
