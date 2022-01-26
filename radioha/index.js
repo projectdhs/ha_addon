@@ -46,6 +46,7 @@ xffmpeg.stdout.on("data",function(data) {
 var liveServer = http.createServer((req, resp) => {
     const urlParts = url.parse(req.url, true);
     const urlParams = urlParts.query;
+	console.log(urlParams);
 	const urlPath = urlParts.pathname;
 	
 	if(urlPath == "/radio"){
@@ -278,5 +279,5 @@ function getsbs(ch) {
 }
 
 liveServer.listen(port, '0.0.0.0', () => {
-    console.log('Server running at http://0.0.0.0:13000');
+    console.log('Server running at http://0.0.0.0:3005');
 });
