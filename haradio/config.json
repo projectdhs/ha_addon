@@ -1,6 +1,6 @@
 {
   "name": "Korea Radio for HA",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "slug": "haradio",
   "description": "Korea Intenet Radio for HA",
   "arch": [
