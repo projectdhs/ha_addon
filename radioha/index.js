@@ -13,7 +13,7 @@ const instance = axios.create({
 
 function return_pipe(urls, resp, req) {
     var xffmpeg = child_process.spawn("ffmpeg", [
-         "-loglevel", "error", "-i", urls, "-acodec", "pcm_u8", "-ar", "44100", "-bufsize", "256K", "-f", "wav", "pipe:1" // output to stdout
+         "-loglevel", "error", "-i", urls, "-acodec", "libmp3lame", "-ar", "44100", "-f", "mp3", "pipe:1" // output to stdout
     ], {
         detached: false
     });
