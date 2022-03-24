@@ -12,9 +12,9 @@ const instance = axios.create({
 });
 
 function return_pipe(urls, resp, req) {
-    var xffmpeg = child_process.spawn("ffmpeg", [
-         "-loglevel", "error", "-i", urls, "-acodec", "libmp3lame", "-ar", "44100", "-f", "mp3", "pipe:1" // output to stdout
-    ], {
+    var xffmpeg = child_process.spawn("ffmpeg", ["-headers", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.162 Safari/537.36",
+        "-loglevel", "error", "-i", urls, "-c:a", "mp3", "-b:a", "256k", "-ar", "44100", "-ac", "2", "-bufsize", "64K", "-f", "wav", "pipe:1" // output to stdout
+   ], {
         detached: false
     });
 
@@ -191,12 +191,11 @@ function getmbc(ch) {
             let mbc_ch = {
                 'mbc_fm4u': 'mfm',
                 'mbc_fm': 'sfm',
-                'allthat': 'chm'
             };
 
             instance({
                     method: 'get',
-                    url: 'http://miniplay.imbc.com/WebHLS.ashx?channel=' + mbc_ch[ch] + '&protocol=M3U8&agent=ios&nocash=0.3996827673840577&callback=jarvis.miniInfo.loadOnAirComplete',
+                    url: 'https://sminiplay.imbc.com/aacplay.ashx?agent=webapp&channel=' + mbc_ch[ch] + '&callback=jarvis.miniInfo.loadOnAirComplete',
                     headers: {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
                         'Referer': 'http://mini.imbc.com/',
@@ -206,29 +205,9 @@ function getmbc(ch) {
                 })
 
                 .then(response => {
-                    var text = 'http://' + response.data.split('"http://')[1].split('"')[0];
+                    var text = 'https://' + response.data.split('"https://')[1].split('"')[0];
+                    resolve(text);
 
-                    instance({
-                            method: 'get',
-                            url: text,
-                            headers: {
-                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36',
-                                'Referer': 'http://mini.imbc.com/',
-                                'Accept-Language': 'ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7',
-                                'Accept-Encoding': 'gzip, deflate'
-                            }
-                        })
-
-                        .then(response2 => {
-
-                            var text2 = response2.data.split('m3u8?')[1].trim();
-                            resolve('http://175.158.10.83/s' + mbc_ch[ch] + '/_definst_/' + mbc_ch[ch] + '.stream/playlist.m3u8?' + text2);
-
-
-                        }).catch(e => {
-                            console.log(e)
-                            resolve("invaild");
-                        })
                 }).catch(e => {
                     console.log(e)
                     resolve("invaild");

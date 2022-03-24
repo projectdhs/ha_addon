@@ -1,7 +1,11 @@
-FROM alpine:3.15
-RUN apk add --no-cache nodejs
-RUN apk add --no-cache npm
-RUN apk add --no-cache ffmpeg
+FROM ubuntu:18.04
+
+RUN apt-get update -y
+RUN apt-get install curl -y
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+
+RUN apt-get install nodejs ffmpeg -y
+
 WORKDIR /app
 COPY index.js /app/
 COPY package.json /app/
