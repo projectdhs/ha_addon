@@ -145,39 +145,32 @@ function getkbs(param) {
         };
         try {
             instance({
-                    method: 'get', //you can set what request you want to be
-                    url: 'https://onair.kbs.co.kr/index.html?sname=onair&stype=live&ch_code=' + kbs_ch[param],
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.71 Safari/537.36'
+                method: 'get', //you can set what request you want to be
+                url: 'https://cfpwwwapi.kbs.co.kr/api/v1/landing/live/channel_code/' + kbs_ch[param],
+                headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 Safari/537.36',
+                    'referer' : 'https://onair.kbs.co.kr/'
+                }
+            })
+
+
+            .then(response => {
+
+                const kbs_src = response.data.channel_item;
+                for(var i=0; i<kbs_src.length; i++) {
+                    if(kbs_src[i].media_type == 'radio') {
+                        var media_src = kbs_src[i].service_url;
+                        break;
                     }
-                })
+                }
 
-                .then(response => {
-
-                    var lines = response.data.split('\n');
-                    var x = 0;
-                    for (let i = 0; i < lines.length; i++) {
-                        if (lines[i].includes("Key-Pair-Id")) {
-                            var mLine = lines[i];
-
-                            break;
-                        } else {
-                            x += 1;
-                        }
-                    }
-
-                    if (mLine) {
-                        mLine = mLine.replace(/\\"/g, '"');
-
-                        var mStream = mLine.split('"service_url":"')[1].split('"')[0];
-                        resolve(mStream);
-                    }
+                resolve(media_src);
 
 
-                }).catch(e => {
-                    console.log(e)
-                    resolve("invaild");
-                })
+            }).catch(e => {
+                console.log(e)
+                resolve("invaild");
+            })
         } catch {
             resolve("invaild");
         }
