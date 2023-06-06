@@ -1,4 +1,5 @@
 const port = 3005; // 포트 설정
+const atype_list = [256, 192, 128, 96, 48];
 const mytoken = 'homeassistant' // 토큰 설정
 const http = require('http');
 const url = require("url");
@@ -12,8 +13,14 @@ const instance = axios.create({
 });
 
 function return_pipe(urls, resp, req) {
+    const urlParts = url.parse(req.url, true);
+    const urlParams = urlParts.query;
+    let atype = urlParams["atype"];
+    if(atype == undefined) atype=0;
+    else atype = Number(atype);
+
     var xffmpeg = child_process.spawn("ffmpeg", ["-headers", "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.162 Safari/537.36",
-        "-loglevel", "error", "-i", urls, "-c:a", "mp3", "-b:a", "256k", "-ar", "44100", "-ac", "2", "-bufsize", "64K", "-f", "wav", "pipe:1" // output to stdout
+        "-loglevel", "error", "-i", urls, "-c:a", "mp3", "-b:a", atype_list[atype]+"k", "-ar", "44100", "-ac", "2", "-bufsize", "64K", "-f", "wav", "pipe:1" // output to stdout
    ], {
         detached: false
     });
@@ -46,7 +53,6 @@ xffmpeg.stdout.on("data",function(data) {
 var liveServer = http.createServer((req, resp) => {
     const urlParts = url.parse(req.url, true);
     const urlParams = urlParts.query;
-	console.log(urlParams);
 	const urlPath = urlParts.pathname;
 	
 	if(urlPath == "/radio"){
