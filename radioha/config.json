@@ -1,14 +1,9 @@
 {
   "name": "Korea Radio for HA",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "slug": "radioha",
   "description": "Korea Intenet Radio for HA",
-  "arch": [
-    "armhf",
-    "armv7",
-    "aarch64",
-    "amd64"
-  ],
+  "arch": ["armhf", "armv7", "aarch64", "amd64"],
   "ports": {
     "3005/tcp": 3005
   },
